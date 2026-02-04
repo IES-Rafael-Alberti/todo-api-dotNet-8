@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO (API + Frontend puro)
+    </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><h1>To - DO</h1></header>
+    <!-- Formulario principal para crear/editar tareas -->
+    <form id="taskForm">
+        <input type="hidden" id="taskId" />
+        <label>
+          Título
+          <input id="title" required minlength="3" />
+        </label>
+
+        <label>
+          Descripción
+          <textarea id="description"></textarea>
+        </label>
+
+        <label>
+          Fecha límite
+          <input id="dueDate" type="datetime-local" required />
+        </label>
+
+        <label>
+          Estado
+          <select id="status">
+            <option value="Pending">Pending</option>
+            <option value="InProgress">InProgress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </label>
+
+        <div class="row">
+          <button type="submit">Guardar</button>
+          <button type="button" id="resetBtn">Nuevo</button>
+        </div>
+      </form>
+
+      <!-- Lista de tareas renderizada por app.js -->
+      <ul id="taskList"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Debug API</h2>
+
+      <!-- Panel para ver request/response sin abrir las DevTools -->
+      <div class="debug">
+        <div>
+          <h3>Request</h3>
+          <pre id="reqBox"></pre>
+        </div>
+        <div>
+          <h3>Response</h3>
+          <pre id="resBox"></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+    
+</body>
+</html>
