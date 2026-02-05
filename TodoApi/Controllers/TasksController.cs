@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TodoApi.DTOs;
+using TodoApi.Models;
 using TodoApi.Services;
 
 namespace TodoApi.Controllers;
@@ -19,10 +20,10 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<TaskReadDto>> GetAll()
+    public ActionResult<IEnumerable<TaskReadDto>> GetAll([FromQuery] TaskStatus? status)
     {
         // 200 OK con la lista de tareas.
-        return Ok(_service.GetAll());
+        return Ok(_service.GetAll(status));
     }
 
     [HttpGet("{id}")]

@@ -6,7 +6,7 @@ namespace TodoApi.Repositories;
 public interface ITasksRepository
 {
     // Devuelve todas las tareas.
-    IEnumerable<TodoTask> GetAll();
+    IEnumerable<TodoTask> GetAll(TaskStatus? status = null);
     // Busca una tarea por id.
     TodoTask? GetById(int id);
     // Inserta una tarea nueva.

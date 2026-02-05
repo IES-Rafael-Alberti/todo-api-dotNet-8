@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using TodoApi.Data;
 using TodoApi.Repositories;
 using TodoApi.Middleware;
@@ -7,7 +8,12 @@ using TodoApi.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Registro de controladores (API REST con atributos).
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Serializa enums como strings ("Pending") en lugar de numeros.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 // Swagger/OpenAPI (solo en desarrollo).
 builder.Services.AddEndpointsApiExplorer();

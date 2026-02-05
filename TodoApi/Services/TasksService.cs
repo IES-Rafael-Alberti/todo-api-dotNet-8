@@ -1,4 +1,5 @@
 using TodoApi.DTOs;
+using TodoApi.Mapping;
 using TodoApi.Models;
 using TodoApi.Repositories;
 using TodoApi.Exceptions;
@@ -17,11 +18,11 @@ public class TasksService : ITasksService
         _repository = repository;
     }
 
-    public IEnumerable<TaskReadDto> GetAll()
+    public IEnumerable<TaskReadDto> GetAll(TaskStatus? status = null)
     {
         // Select aplica el mapeo a cada elemento (similar a stream().map()).
-        return _repository.GetAll()
-            .Select(ToReadDto);
+        return _repository.GetAll(status)
+            .Select(t => t.ToReadDto());
     }
 
     public TaskReadDto? GetById(int id)
@@ -30,33 +31,55 @@ public class TasksService : ITasksService
         var task = _repository.GetById(id);
         if (task == null)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
-        return  ToReadDto(task);
+        return task.ToReadDto();
     }
 
     public TaskReadDto Create(TaskCreateDto dto)
     {
+        if (dto.DueDate is null)
+            throw new BadRequestException(
+                errorCode: "DUE_DATE_REQUIRED",
+                message: "La fecha límite (DueDate) es obligatoria.");
+
+        var now = DateTime.UtcNow;
+        if (dto.DueDate.Value < now)
+            throw new BadRequestException(
+                errorCode: "DUE_DATE_INVALID",
+                message: "La fecha límite (DueDate) no puede ser anterior a la fecha actual.");
+
         // DTO -> modelo de dominio.
-        var task = new TodoTask
-        {
-            Title = dto.Title,
-            IsCompleted = false
-        };
+        var task = dto.ToEntity();
 
         var created = _repository.Add(task);
-        return ToReadDto(created);
+        return created.ToReadDto();
     }
 
     public void Update(int id, TaskUpdateDto dto)
     {
+        if (dto.DueDate is null)
+            throw new BadRequestException(
+                errorCode: "DUE_DATE_REQUIRED",
+                message: "La fecha límite (DueDate) es obligatoria.");
+
+        var existing = _repository.GetById(id);
+        if (existing == null)
+            throw new NotFoundException($"No existe la tarea con ID {id}.");
+
+        if (dto.DueDate.Value < existing.CreationDate)
+            throw new BadRequestException(
+                errorCode: "DUE_DATE_INVALID",
+                message: "La fecha límite (DueDate) no puede ser anterior a la fecha de creación.");
+
         // Pasamos un modelo "nuevo" con los datos editados.
         var updated = _repository.Update(id, task: new TodoTask
         {
-            Title = dto.Title,
-            IsCompleted = dto.IsCompleted
+            Title = dto.Title.Trim(),
+            Description = string.IsNullOrWhiteSpace(dto.Description) ? null : dto.Description.Trim(),
+            DueDate = dto.DueDate.Value,
+            Status = dto.Status
         });
 
-        if(!updated)
-            // Si no se encontro la entidad, devolvemos 404 via excepcion.
+        if (!updated)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
     }
 
@@ -67,14 +90,5 @@ public class TasksService : ITasksService
             throw new NotFoundException($"No existe la tarea con ID {id}.");
     }
 
-    // 🔹 Mapeo manual (sin AutoMapper)
-    private static TaskReadDto ToReadDto(TodoTask task)
-    {
-        return new TaskReadDto
-        {
-            Id = task.Id,
-            Title = task.Title,
-            IsCompleted = task.IsCompleted
-        };
-    }
+    // 🔹 Mapeo manual (sin AutoMapper) en TasksMapping.
 }

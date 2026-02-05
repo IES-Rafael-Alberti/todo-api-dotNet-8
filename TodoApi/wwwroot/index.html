@@ -1,16 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TO-DO (API + Frontend puro)
-    </title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TO-DO (API + Frontend puro)</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header><h1>To - DO</h1></header>
-    <!-- Formulario principal para crear/editar tareas -->
-    <form id="taskForm">
+  <header>
+    <h1>TO-DO</h1>
+  </header>
+
+  <main class="grid">
+    <section class="panel">
+      <h2>Tareas</h2>
+
+      <form id="taskForm">
         <input type="hidden" id="taskId" />
         <label>
           Título
@@ -42,14 +47,12 @@
         </div>
       </form>
 
-      <!-- Lista de tareas renderizada por app.js -->
       <ul id="taskList"></ul>
     </section>
 
     <section class="panel">
       <h2>Debug API</h2>
 
-      <!-- Panel para ver request/response sin abrir las DevTools -->
       <div class="debug">
         <div>
           <h3>Request</h3>
@@ -64,6 +67,5 @@
   </main>
 
   <script src="app.js"></script>
-    
 </body>
 </html>

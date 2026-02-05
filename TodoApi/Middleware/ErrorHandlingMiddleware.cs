@@ -27,6 +27,15 @@ public class ErrorHandlingMiddleware
                 error = ex.Message
             });
         }
+        catch (BadRequestException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = ex.ErrorCode,
+                message = ex.Message
+            });
+        }
         catch (ConflictException ex)
         {
             context.Response.StatusCode = StatusCodes.Status409Conflict;

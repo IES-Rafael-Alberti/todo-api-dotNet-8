@@ -12,9 +12,15 @@ public class TasksInMemoryRepository : ITasksRepository
     private int _nextId = 1;
 
     // Devuelve la misma lista en memoria.
-    public IEnumerable<TodoTask> GetAll()
+    public IEnumerable<TodoTask> GetAll(TaskStatus? status = null)
     {
-        return _tasks;
+        var query = _tasks.AsEnumerable();
+        if (status is not null)
+            query = query.Where(t => t.Status == status);
+
+        return query
+            .OrderBy(t => t.Status == TaskStatus.Completed ? 1 : 0)
+            .ThenByDescending(t => t.CreationDate);
     }
 
     // Busca por id usando LINQ.
@@ -26,7 +32,7 @@ public class TasksInMemoryRepository : ITasksRepository
     // Asigna un id incremental y guarda.
     public TodoTask Add(TodoTask task)
     {
-        if (!task.IsCompleted && CountPending() >= MaxPending)
+        if (task.Status == TaskStatus.Pending && CountPending() >= MaxPending)
             throw new ConflictException(
                 errorCode: "MAX_PENDING_REACHED",
                 message: $"No se pueden crear más de {MaxPending} tareas pendientes.");
@@ -38,7 +44,7 @@ public class TasksInMemoryRepository : ITasksRepository
 
     public int CountPending()
     {
-        return _tasks.Count(t => !t.IsCompleted);
+        return _tasks.Count(t => t.Status == TaskStatus.Pending);
     }
 
     // Sustituye los campos editables si existe.
@@ -48,8 +54,16 @@ public class TasksInMemoryRepository : ITasksRepository
         if (existing == null)
             return false;
 
+        if (task.Status == TaskStatus.Pending && existing.Status != TaskStatus.Pending
+            && CountPending() >= MaxPending)
+            throw new ConflictException(
+                errorCode: "MAX_PENDING_REACHED",
+                message: $"No se pueden crear más de {MaxPending} tareas pendientes.");
+
         existing.Title = task.Title;
-        existing.IsCompleted = task.IsCompleted;
+        existing.Description = task.Description;
+        existing.DueDate = task.DueDate;
+        existing.Status = task.Status;
         return true;
     }
 

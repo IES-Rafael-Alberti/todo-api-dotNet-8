@@ -15,10 +15,17 @@ public class TasksEfRepository : ITasksRepository
         _db = db;
     }
 
-    public IEnumerable<TodoTask> GetAll()
+    public IEnumerable<TodoTask> GetAll(TaskStatus? status = null)
     {
         // AsNoTracking: lectura sin seguimiento de cambios (mas rapido para GET).
-        return _db.Tasks.AsNoTracking().ToList();
+        var query = _db.Tasks.AsNoTracking().AsQueryable();
+        if (status is not null)
+            query = query.Where(t => t.Status == status);
+
+        return query
+            .OrderBy(t => t.Status == TaskStatus.Completed ? 1 : 0)
+            .ThenByDescending(t => t.CreationDate)
+            .ToList();
     }
 
     public TodoTask? GetById(int id)
@@ -30,7 +37,7 @@ public class TasksEfRepository : ITasksRepository
 
     public TodoTask Add(TodoTask task)
     {
-        if (!task.IsCompleted && CountPending() >= MaxPending)
+        if (task.Status == TaskStatus.Pending && CountPending() >= MaxPending)
             throw new ConflictException(
                 errorCode: "MAX_PENDING_REACHED",
                 message: $"No se pueden crear más de {MaxPending} tareas pendientes.");
@@ -42,7 +49,7 @@ public class TasksEfRepository : ITasksRepository
 
     public int CountPending()
     {
-        return _db.Tasks.Count(t => !t.IsCompleted);
+        return _db.Tasks.Count(t => t.Status == TaskStatus.Pending);
     }
 
     public bool Update(int id, TodoTask task)
@@ -52,8 +59,16 @@ public class TasksEfRepository : ITasksRepository
         if (existing == null)
             return false;
 
+        if (task.Status == TaskStatus.Pending && existing.Status != TaskStatus.Pending
+            && CountPending() >= MaxPending)
+            throw new ConflictException(
+                errorCode: "MAX_PENDING_REACHED",
+                message: $"No se pueden crear más de {MaxPending} tareas pendientes.");
+
         existing.Title = task.Title;
-        existing.IsCompleted = task.IsCompleted;
+        existing.Description = task.Description;
+        existing.DueDate = task.DueDate;
+        existing.Status = task.Status;
 
         _db.SaveChanges();
         return true;
