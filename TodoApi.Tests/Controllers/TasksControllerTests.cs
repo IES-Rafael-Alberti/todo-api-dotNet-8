@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TodoApi.Controllers;
 using TodoApi.DTOs;
+using TodoApi.Models;
 using TodoApi.Services;
 using Xunit;
 
@@ -21,12 +22,20 @@ public class TasksControllerTests
     [Fact]
     public void GetAll_ReturnsOkWithTasks()
     {
-        _serviceMock.Setup(s => s.GetAll()).Returns(new[]
+        _serviceMock.Setup(s => s.GetAll(It.IsAny<TaskStatus?>())).Returns(new[]
         {
-            new TaskReadDto { Id = 1, Title = "Test", IsCompleted = false }
+            new TaskReadDto
+            {
+                Id = 1,
+                Title = "Test",
+                Description = null,
+                CreationDate = DateTime.UtcNow.AddMinutes(-5),
+                DueDate = DateTime.UtcNow.AddDays(1),
+                Status = TaskStatus.Pending
+            }
         });
 
-        var result = _controller.GetAll();
+        var result = _controller.GetAll(status: null);
 
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var tasks = Assert.IsAssignableFrom<IEnumerable<TaskReadDto>>(ok.Value);
@@ -37,8 +46,21 @@ public class TasksControllerTests
     [Fact]
     public void Create_ReturnsCreatedAt()
     {
-        var dto = new TaskCreateDto { Title = "Nueva" };
-        var created = new TaskReadDto { Id = 1, Title = "Nueva", IsCompleted = false };
+        var dto = new TaskCreateDto
+        {
+            Title = "Nueva",
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending
+        };
+        var created = new TaskReadDto
+        {
+            Id = 1,
+            Title = "Nueva",
+            Description = null,
+            CreationDate = DateTime.UtcNow,
+            DueDate = dto.DueDate.Value,
+            Status = TaskStatus.Pending
+        };
 
         _serviceMock.Setup(s => s.Create(dto)).Returns(created);
 

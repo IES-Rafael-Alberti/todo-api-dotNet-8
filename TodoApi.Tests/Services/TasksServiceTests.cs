@@ -22,11 +22,20 @@ public class TasksServiceTests
     [Fact]
     public void GetById_WhenTaskExists_ReturnsTask()
     {
-        var task = new TodoTask { Id = 1, Title = "Test", IsCompleted = false };
+        var task = new TodoTask
+        {
+            Id = 1,
+            Title = "Test",
+            Description = null,
+            CreationDate = DateTime.UtcNow.AddMinutes(-10),
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending
+        };
         _repoMock.Setup(r => r.GetById(1)).Returns(task);
 
         var result = _service.GetById(1);
 
+        Assert.NotNull(result);
         Assert.Equal(1, result.Id);
         Assert.Equal("Test", result.Title);
     }
@@ -50,11 +59,16 @@ public class TasksServiceTests
                 return t;
             });
 
-        var dto = new TaskCreateDto { Title = "Nueva tarea" };
+        var dto = new TaskCreateDto
+        {
+            Title = "Nueva tarea",
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending
+        };
 
         var result = _service.Create(dto);
 
         Assert.Equal("Nueva tarea", result.Title);
-        Assert.False(result.IsCompleted);
+        Assert.Equal(TaskStatus.Pending, result.Status);
     }
 }
