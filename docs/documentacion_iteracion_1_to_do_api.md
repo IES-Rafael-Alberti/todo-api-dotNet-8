@@ -22,7 +22,7 @@ Controller → Service → Repository → EF Core (SQLite)
 ```
 
 ### Estado del proyecto
-- **Iteración 1**: Completada (CRUD de tareas + frontend mínimo + reglas de negocio).
+- **Iteración 1**: En curso (modelo completo + frontend + reglas de negocio).
 - **Iteración 2–4**: Pendientes (usuarios/JWT, propiedad, roles).
 
 ### Cómo ejecutar
@@ -183,4 +183,3 @@ http GET :5000/api/tasks
 ---
 
 > **Nota docente**: Estos documentos corresponden a la **Iteración 1**. Las iteraciones siguientes (usuarios/JWT, propiedad y roles) se documentarán en archivos separados para mantener claridad y progresión pedagógica.
-
