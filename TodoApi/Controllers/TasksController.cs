@@ -4,64 +4,55 @@ using TodoApi.Services;
 
 namespace TodoApi.Controllers;
 
-// Controlador REST: traduce peticiones HTTP a llamadas a la capa de servicio.
 [ApiController]
+// [Route] define la ruta base del recurso.
 [Route("api/tasks")]
+// Hereda de ControllerBase para usar helpers de API (Ok, CreatedAtAction, etc.).
 public class TasksController : ControllerBase
 {
     private readonly ITasksService _service;
 
-    // El servicio se inyecta por constructor (inyeccion de dependencias).
     public TasksController(ITasksService service)
     {
+        // Inyeccion de dependencias (DI): el framework nos pasa el servicio.
         _service = service;
     }
 
-    // GET /api/tasks
     [HttpGet]
     public ActionResult<IEnumerable<TaskReadDto>> GetAll()
     {
+        // 200 OK con la lista de tareas.
         return Ok(_service.GetAll());
     }
 
-    // GET /api/tasks/{id}
     [HttpGet("{id}")]
     public ActionResult<TaskReadDto> GetById(int id)
     {
-        var task = _service.GetById(id);
-        if (task == null)
-            return NotFound();
-
-        return Ok(task);
+        // {id} en la ruta se enlaza al parametro id.
+        return Ok(_service.GetById(id));
     }
 
-    // POST /api/tasks
     [HttpPost]
     public ActionResult<TaskReadDto> Create(TaskCreateDto dto)
     {
+        // CreatedAtAction genera 201 con Location apuntando al GET por id.
         var created = _service.Create(dto);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // PUT /api/tasks/{id}
     [HttpPut("{id}")]
     public IActionResult Update(int id, TaskUpdateDto dto)
     {
-        var updated = _service.Update(id, dto);
-        if (!updated)
-            return NotFound();
-
+        // 204 NoContent cuando la actualizacion es correcta.
+        _service.Update(id, dto);
         return NoContent();
     }
 
-    // DELETE /api/tasks/{id}
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var deleted = _service.Delete(id);
-        if (!deleted)
-            return NotFound();
-
-        return NoContent();
+        // 204 NoContent al borrar.
+       _service.Delete(id);
+       return NoContent();
     }
 }

@@ -74,3 +74,6 @@ obj/
 
 # Others
 .DS_Store
+
+# SQLite local database
+/TodoApi/todo.db

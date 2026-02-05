@@ -1,12 +1,14 @@
 namespace TodoApi.Models;
 
-// Modelo de dominio: representa una tarea dentro del servidor.
+using System.ComponentModel.DataAnnotations;
 public class TodoTask
 {
-    // Identificador interno.
+    // Propiedades auto-implementadas (get/set) similares a los campos con accesores en Java.
     public int Id { get; set; }
-    // Titulo corto.
+
+    // Atributos (annotations) usados por validacion y EF Core.
+    [Required]
+    [MaxLength]
     public string Title { get; set; } = string.Empty;
-    // Estado de finalizacion.
     public bool IsCompleted { get; set; }
 }

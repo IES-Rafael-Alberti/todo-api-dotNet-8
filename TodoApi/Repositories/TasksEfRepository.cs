@@ -1,29 +1,33 @@
+using Microsoft.EntityFrameworkCore;
+using TodoApi.Data;
 using TodoApi.Exceptions;
 using TodoApi.Models;
 
 namespace TodoApi.Repositories;
 
-// Implementacion en memoria: no persiste entre reinicios.
-public class TasksInMemoryRepository : ITasksRepository
+public class TasksEfRepository : ITasksRepository
 {
     private const int MaxPending = 10;
-    private readonly List<TodoTask> _tasks = new();
-    // Campo privado que lleva el siguiente id (simula auto-incremento).
-    private int _nextId = 1;
+    private readonly TodoDbContext _db;
 
-    // Devuelve la misma lista en memoria.
+    public TasksEfRepository(TodoDbContext db)
+    {
+        _db = db;
+    }
+
     public IEnumerable<TodoTask> GetAll()
     {
-        return _tasks;
+        // AsNoTracking: lectura sin seguimiento de cambios (mas rapido para GET).
+        return _db.Tasks.AsNoTracking().ToList();
     }
 
-    // Busca por id usando LINQ.
     public TodoTask? GetById(int id)
     {
-        return _tasks.FirstOrDefault(t => t.Id == id);
+        // FirstOrDefault devuelve null si no existe.
+        return _db.Tasks.AsNoTracking()
+            .FirstOrDefault(t => t.Id == id);
     }
 
-    // Asigna un id incremental y guarda.
     public TodoTask Add(TodoTask task)
     {
         if (!task.IsCompleted && CountPending() >= MaxPending)
@@ -31,36 +35,38 @@ public class TasksInMemoryRepository : ITasksRepository
                 errorCode: "MAX_PENDING_REACHED",
                 message: $"No se pueden crear más de {MaxPending} tareas pendientes.");
 
-        task.Id = _nextId++;
-        _tasks.Add(task);
+        _db.Tasks.Add(task);
+        _db.SaveChanges();
         return task;
     }
 
     public int CountPending()
     {
-        return _tasks.Count(t => !t.IsCompleted);
+        return _db.Tasks.Count(t => !t.IsCompleted);
     }
 
-    // Sustituye los campos editables si existe.
     public bool Update(int id, TodoTask task)
     {
-        var existing = GetById(id);
+        // Find usa la clave primaria y puede devolver null si no existe.
+        var existing = _db.Tasks.Find(id);
         if (existing == null)
             return false;
 
         existing.Title = task.Title;
         existing.IsCompleted = task.IsCompleted;
+
+        _db.SaveChanges();
         return true;
     }
 
-    // Elimina por id si existe.
     public bool Delete(int id)
     {
-        var task = GetById(id);
+        var task = _db.Tasks.Find(id);
         if (task == null)
             return false;
 
-        _tasks.Remove(task);
+        _db.Tasks.Remove(task);
+        _db.SaveChanges();
         return true;
     }
 }

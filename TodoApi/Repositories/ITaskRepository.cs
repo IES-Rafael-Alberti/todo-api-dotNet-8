@@ -2,7 +2,7 @@ using TodoApi.Models;
 
 namespace TodoApi.Repositories;
 
-// Contrato de acceso a datos (persistencia).
+// Contrato (interface): define que metodos debe tener cualquier repositorio.
 public interface ITasksRepository
 {
     // Devuelve todas las tareas.
@@ -11,6 +11,8 @@ public interface ITasksRepository
     TodoTask? GetById(int id);
     // Inserta una tarea nueva.
     TodoTask Add(TodoTask task);
+    // Cuenta las tareas pendientes.
+    int CountPending();
     // Actualiza una tarea existente.
     bool Update(int id, TodoTask task);
     // Elimina una tarea.

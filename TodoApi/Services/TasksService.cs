@@ -1,37 +1,41 @@
 using TodoApi.DTOs;
 using TodoApi.Models;
 using TodoApi.Repositories;
+using TodoApi.Exceptions;
+
 
 namespace TodoApi.Services;
 
-// Implementa la logica de negocio y el mapeo entre modelos y DTOs.
+// Implementa la interfaz para poder cambiar la logica sin tocar el controlador.
 public class TasksService : ITasksService
 {
     private readonly ITasksRepository _repository;
 
-    // El repositorio se inyecta para aislar el acceso a datos.
     public TasksService(ITasksRepository repository)
     {
+        // DI: el repositorio concreto se resuelve en Program.cs.
         _repository = repository;
     }
 
-    // Lista de tareas convertidas a DTO de lectura.
     public IEnumerable<TaskReadDto> GetAll()
     {
+        // Select aplica el mapeo a cada elemento (similar a stream().map()).
         return _repository.GetAll()
             .Select(ToReadDto);
     }
 
-    // Devuelve una tarea por id o null si no existe.
     public TaskReadDto? GetById(int id)
     {
+        // Lanza excepcion de dominio si no existe (se traduce a 404).
         var task = _repository.GetById(id);
-        return task == null ? null : ToReadDto(task);
+        if (task == null)
+            throw new NotFoundException($"No existe la tarea con ID {id}.");
+        return  ToReadDto(task);
     }
 
-    // Crea un modelo interno a partir del DTO de entrada.
     public TaskReadDto Create(TaskCreateDto dto)
     {
+        // DTO -> modelo de dominio.
         var task = new TodoTask
         {
             Title = dto.Title,
@@ -42,25 +46,28 @@ public class TasksService : ITasksService
         return ToReadDto(created);
     }
 
-    // Actualiza todo el estado de una tarea.
-    public bool Update(int id, TaskUpdateDto dto)
+    public void Update(int id, TaskUpdateDto dto)
     {
-        var task = new TodoTask
+        // Pasamos un modelo "nuevo" con los datos editados.
+        var updated = _repository.Update(id, task: new TodoTask
         {
             Title = dto.Title,
             IsCompleted = dto.IsCompleted
-        };
+        });
 
-        return _repository.Update(id, task);
+        if(!updated)
+            // Si no se encontro la entidad, devolvemos 404 via excepcion.
+            throw new NotFoundException($"No existe la tarea con ID {id}.");
     }
 
-    // Borra una tarea por id.
-    public bool Delete(int id)
+    public void Delete(int id)
     {
-        return _repository.Delete(id);
+        var deleted = _repository.Delete(id);
+        if (!deleted)
+            throw new NotFoundException($"No existe la tarea con ID {id}.");
     }
 
-    // Mapeo manual (sin AutoMapper) para no depender de librerias extras.
+    // 🔹 Mapeo manual (sin AutoMapper)
     private static TaskReadDto ToReadDto(TodoTask task)
     {
         return new TaskReadDto
