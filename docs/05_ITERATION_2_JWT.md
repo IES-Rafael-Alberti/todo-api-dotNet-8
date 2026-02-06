@@ -343,6 +343,10 @@ Nota:
 - [x] Asociacion de `UserId` al crear tareas.
 - [x] Migracion EF (Users + UserId).
 - [x] Tests de auth y proteccion de `/api/tasks`.
+- [x] Pruebas manuales documentadas (curl/httpie).
+
+### Estado
+- Iteracion 2 cerrada (backend y pruebas manuales).
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
