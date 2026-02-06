@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TodoApi.Controllers;
 using TodoApi.DTOs;
 using TodoApi.Models;
@@ -62,7 +65,18 @@ public class TasksControllerTests
             Status = TaskStatus.Pending
         };
 
-        _serviceMock.Setup(s => s.Create(dto)).Returns(created);
+        _serviceMock.Setup(s => s.Create(dto, It.IsAny<int>())).Returns(created);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, "1")
+                }, "test"))
+            }
+        };
 
         var result = _controller.Create(dto);
 

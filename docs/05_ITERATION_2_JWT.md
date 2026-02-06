@@ -340,6 +340,7 @@ Nota:
 - [x] Repositorio de usuarios + servicio de JWT base.
 - [x] Configuracion JWT en `Program.cs` y `appsettings.json`.
 - [x] `AuthController` y proteccion de `/api/tasks`.
+- [x] Asociacion de `UserId` al crear tareas.
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
@@ -351,7 +352,7 @@ Nota:
 - [x] Implementar hashing de password.
 - [x] Configurar JWT en `Program.cs` y `appsettings.json`.
 - [x] Proteger `/api/tasks` con `[Authorize]`.
-- [ ] Asociar `UserId` al crear tareas.
+- [x] Asociar `UserId` al crear tareas.
 - [ ] Crear migracion y aplicar en SQLite.
 
 ### Por hacer (tests)

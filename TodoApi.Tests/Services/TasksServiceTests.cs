@@ -66,7 +66,7 @@ public class TasksServiceTests
             Status = TaskStatus.Pending
         };
 
-        var result = _service.Create(dto);
+        var result = _service.Create(dto, userId: 1);
 
         Assert.Equal("Nueva tarea", result.Title);
         Assert.Equal(TaskStatus.Pending, result.Status);

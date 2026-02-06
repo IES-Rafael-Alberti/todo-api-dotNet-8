@@ -34,7 +34,7 @@ public class TasksService : ITasksService
         return task.ToReadDto();
     }
 
-    public TaskReadDto Create(TaskCreateDto dto)
+    public TaskReadDto Create(TaskCreateDto dto, int userId)
     {
         if (dto.DueDate is null)
             throw new BadRequestException(
@@ -49,6 +49,7 @@ public class TasksService : ITasksService
 
         // DTO -> modelo de dominio.
         var task = dto.ToEntity();
+        task.UserId = userId;
 
         var created = _repository.Add(task);
         return created.ToReadDto();

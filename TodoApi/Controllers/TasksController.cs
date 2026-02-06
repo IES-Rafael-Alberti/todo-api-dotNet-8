@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using TodoApi.DTOs;
 using TodoApi.Models;
 using TodoApi.Services;
@@ -40,7 +42,8 @@ public class TasksController : ControllerBase
     public ActionResult<TaskReadDto> Create(TaskCreateDto dto)
     {
         // CreatedAtAction genera 201 con Location apuntando al GET por id.
-        var created = _service.Create(dto);
+        var userId = GetUserId();
+        var created = _service.Create(dto, userId);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
@@ -58,5 +61,19 @@ public class TasksController : ControllerBase
         // 204 NoContent al borrar.
        _service.Delete(id);
        return NoContent();
+    }
+
+    private int GetUserId()
+    {
+        // En JWT guardamos el id en "sub"; tambien puede mapearse a NameIdentifier.
+        var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                  ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(sub) || !int.TryParse(sub, out var userId))
+            throw new TodoApi.Exceptions.UnauthorizedException(
+                "INVALID_TOKEN",
+                "Token invalido o sin identificador de usuario.");
+
+        return userId;
     }
 }

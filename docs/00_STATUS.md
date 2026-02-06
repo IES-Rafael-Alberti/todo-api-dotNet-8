@@ -28,9 +28,9 @@ Hecho:
 - Configuracion JWT en `Program.cs` y `appsettings.json`.
 - `AuthController` creado y rutas `/api/auth/*`.
 - `/api/tasks` protegido con `[Authorize]`.
+- Asociacion de `UserId` al crear tareas.
 
 Pendiente (codigo):
-- Asociar `UserId` al crear tareas.
 - Migracion y aplicarla en SQLite.
 
 Pendiente (tests):

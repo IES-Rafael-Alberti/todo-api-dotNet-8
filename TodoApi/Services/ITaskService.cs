@@ -7,7 +7,7 @@ public interface ITasksService
 {
     IEnumerable<TaskReadDto> GetAll(TaskStatus? status = null);
     TaskReadDto? GetById(int id);
-    TaskReadDto Create(TaskCreateDto dto);
+    TaskReadDto Create(TaskCreateDto dto, int userId);
     void Update(int id, TaskUpdateDto dto);
     void Delete(int id);
 }
