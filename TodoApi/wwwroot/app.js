@@ -11,6 +11,8 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const clearTokenBtn = document.getElementById("clearTokenBtn");
 const tokenBox = document.getElementById("tokenBox");
+const tokenMeta = document.getElementById("tokenMeta");
+const useTokenChk = document.getElementById("useTokenChk");
 
 const reqBox = document.getElementById("reqBox");
 const resBox = document.getElementById("resBox");
@@ -28,9 +30,25 @@ function setToken(token) {
   renderToken();
 }
 
+function parseJwtExp(token) {
+  try {
+    const payload = token.split(".")[1];
+    const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
+    const data = JSON.parse(json);
+    if (!data.exp) return null;
+    return new Date(data.exp * 1000);
+  } catch {
+    return null;
+  }
+}
+
 function renderToken() {
   const token = getToken();
   tokenBox.textContent = token ? token : "(sin token)";
+  const exp = token ? parseJwtExp(token) : null;
+  tokenMeta.textContent = exp
+    ? `exp: ${exp.toLocaleString()}`
+    : "(sin exp)";
 }
 
 function headersToObj(headers) {
@@ -50,7 +68,7 @@ function showResponse(status, headers, body) {
 async function apiFetch(method, url, body) {
   const headers = { "Content-Type": "application/json" };
   const token = getToken();
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (token && useTokenChk.checked) headers["Authorization"] = `Bearer ${token}`;
   showRequest(method, url, headers, body ?? null);
 
   const res = await fetch(url, {
@@ -235,6 +253,10 @@ clearTokenBtn.addEventListener("click", () => {
 
 authForm.addEventListener("submit", (e) => {
   e.preventDefault();
+});
+
+useTokenChk.addEventListener("change", () => {
+  // Solo cambia el comportamiento de headers; no toca el token almacenado.
 });
 
 renderToken();

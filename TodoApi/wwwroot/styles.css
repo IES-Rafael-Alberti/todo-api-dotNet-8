@@ -29,6 +29,22 @@ main.grid {
     max-height: 140px;
 }
 
+.tokenMeta {
+    margin-top: 6px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox input {
+    width: auto;
+}
+
 label {
     display: block;
     margin: 10px 0;
