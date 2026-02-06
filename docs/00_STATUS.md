@@ -31,12 +31,13 @@ Hecho:
 - Asociacion de `UserId` al crear tareas.
 - Migracion Iteracion 2 aplicada en SQLite.
 - Factory de DbContext para migraciones (design-time).
+- Tests de auth (registro/login) añadidos.
+- Test de proteccion en `/api/tasks` (Authorize).
 
 Pendiente (codigo):
 
 Pendiente (tests):
-- Tests de registro/login.
-- Tests de acceso protegido a `/api/tasks`.
+- (Nada pendiente si no se pide mas cobertura).
 
 Pendiente (frontend, si se decide):
 - UI minima de login/registro.

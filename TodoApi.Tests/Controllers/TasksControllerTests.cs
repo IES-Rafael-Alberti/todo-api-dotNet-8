@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using System.Reflection;
 using TodoApi.Controllers;
 using TodoApi.DTOs;
 using TodoApi.Models;
@@ -81,5 +83,12 @@ public class TasksControllerTests
         var result = _controller.Create(dto);
 
         Assert.IsType<CreatedAtActionResult>(result.Result);
+    }
+
+    [Fact]
+    public void Controller_HasAuthorizeAttribute()
+    {
+        var attr = typeof(TasksController).GetCustomAttribute<AuthorizeAttribute>();
+        Assert.NotNull(attr);
     }
 }
