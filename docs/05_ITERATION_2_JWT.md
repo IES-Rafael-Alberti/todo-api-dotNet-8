@@ -341,6 +341,7 @@ Nota:
 - [x] Configuracion JWT en `Program.cs` y `appsettings.json`.
 - [x] `AuthController` y proteccion de `/api/tasks`.
 - [x] Asociacion de `UserId` al crear tareas.
+- [x] Migracion EF (Users + UserId).
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
@@ -353,7 +354,7 @@ Nota:
 - [x] Configurar JWT en `Program.cs` y `appsettings.json`.
 - [x] Proteger `/api/tasks` con `[Authorize]`.
 - [x] Asociar `UserId` al crear tareas.
-- [ ] Crear migracion y aplicar en SQLite.
+- [x] Crear migracion y aplicar en SQLite.
 
 ### Por hacer (tests)
 - [ ] Tests de registro/login.

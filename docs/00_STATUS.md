@@ -29,9 +29,10 @@ Hecho:
 - `AuthController` creado y rutas `/api/auth/*`.
 - `/api/tasks` protegido con `[Authorize]`.
 - Asociacion de `UserId` al crear tareas.
+- Migracion Iteracion 2 aplicada en SQLite.
+- Factory de DbContext para migraciones (design-time).
 
 Pendiente (codigo):
-- Migracion y aplicarla en SQLite.
 
 Pendiente (tests):
 - Tests de registro/login.
