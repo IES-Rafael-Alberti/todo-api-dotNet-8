@@ -25,10 +25,10 @@ Hecho:
 - DTOs de auth (`RegisterDto`, `LoginDto`, `AuthResponseDto`).
 - Repositorio y servicios de auth (`IUsersRepository`, `UsersEfRepository`, `IAuthService`, `AuthService`).
 - Servicio de JWT (`IJwtTokenService`, `JwtTokenService`) y opciones (`JwtOptions`).
+- Configuracion JWT en `Program.cs` y `appsettings.json`.
 
 Pendiente (codigo):
 - `AuthController`.
-- Configuracion JWT en `Program.cs` y `appsettings.json`.
 - Proteger `/api/tasks` con `[Authorize]`.
 - Asociar `UserId` al crear tareas.
 - Migracion y aplicarla en SQLite.

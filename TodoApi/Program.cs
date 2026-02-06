@@ -1,8 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 using TodoApi.Data;
-using TodoApi.Repositories;
 using TodoApi.Middleware;
+using TodoApi.Options;
+using TodoApi.Repositories;
+using TodoApi.Services;
 
 // Host/Builder: prepara configuracion, DI y logging.
 var builder = WebApplication.CreateBuilder(args);
@@ -24,8 +29,32 @@ builder.Services.AddDbContext<TodoDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("TodoDb")));
 // DI: cada request obtiene su repositorio (scope).
 builder.Services.AddScoped<ITasksRepository, TasksEfRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersEfRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // Repositorio in-memory
 // builder.Services.AddSingleton<ITasksRepository, TasksInMemoryRepository>();
+
+// JWT: opciones desde appsettings.json (similar a @ConfigurationProperties).
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
+
+// Autenticacion JWT (equivalente a configurar filtros en Spring Security).
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = jwtOptions.Issuer,
+            ValidAudience = jwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true
+        };
+    });
 
 // Construye la app con todo lo registrado.
 var app = builder.Build();
@@ -44,7 +73,8 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();   // busca index.html
 app.UseStaticFiles();    // sirve HTML, JS, CSS
 
-// Autorización (aunque todavía no haya auth real).
+// Autenticacion antes de autorizacion.
+app.UseAuthentication();
 app.UseAuthorization();
 
 // 🔹 Middleware de manejo de errores

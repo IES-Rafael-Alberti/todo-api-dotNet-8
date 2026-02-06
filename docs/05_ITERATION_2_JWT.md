@@ -338,6 +338,7 @@ Nota:
 - [x] Documento base de Iteracion 2 (objetivos, endpoints, modelo, JWT, errores).
 - [x] Casos de prueba de auth añadidos en `docs/04_API_TESTING.md`.
 - [x] Repositorio de usuarios + servicio de JWT base.
+- [x] Configuracion JWT en `Program.cs` y `appsettings.json`.
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
@@ -347,7 +348,7 @@ Nota:
 - [x] Crear DTOs de auth (`RegisterDto`, `LoginDto`, `AuthResponseDto`).
 - [x] Crear `IAuthService` y `AuthService`.
 - [x] Implementar hashing de password.
-- [ ] Configurar JWT en `Program.cs` y `appsettings.json`.
+- [x] Configurar JWT en `Program.cs` y `appsettings.json`.
 - [ ] Proteger `/api/tasks` con `[Authorize]`.
 - [ ] Asociar `UserId` al crear tareas.
 - [ ] Crear migracion y aplicar en SQLite.
