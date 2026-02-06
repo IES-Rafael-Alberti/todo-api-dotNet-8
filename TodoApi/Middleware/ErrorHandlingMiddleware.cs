@@ -45,6 +45,15 @@ public class ErrorHandlingMiddleware
                 message = ex.Message
             });
         }
+        catch (UnauthorizedException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = ex.ErrorCode,
+                message = ex.Message
+            });
+        }
         catch (Exception)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;

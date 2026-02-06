@@ -13,4 +13,5 @@ public class TodoDbContext : DbContext
 
     // DbSet representa una "tabla" de EF; esta propiedad usa expression-bodied member.
     public DbSet<TodoTask> Tasks => Set<TodoTask>();
+    public DbSet<User> Users => Set<User>();
 }

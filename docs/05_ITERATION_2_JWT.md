@@ -337,15 +337,16 @@ Nota:
 ### Hecho
 - [x] Documento base de Iteracion 2 (objetivos, endpoints, modelo, JWT, errores).
 - [x] Casos de prueba de auth añadidos en `docs/04_API_TESTING.md`.
+- [x] Repositorio de usuarios + servicio de JWT base.
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
 
 ### Por hacer (codigo)
-- [ ] Crear entidad `User` y relacion con `TodoTask` (`UserId`).
-- [ ] Crear DTOs de auth (`RegisterDto`, `LoginDto`, `AuthResponseDto`).
-- [ ] Crear `AuthController`, `IAuthService` y `AuthService`.
-- [ ] Implementar hashing de password.
+- [x] Crear entidad `User` y relacion con `TodoTask` (`UserId`).
+- [x] Crear DTOs de auth (`RegisterDto`, `LoginDto`, `AuthResponseDto`).
+- [x] Crear `IAuthService` y `AuthService`.
+- [x] Implementar hashing de password.
 - [ ] Configurar JWT en `Program.cs` y `appsettings.json`.
 - [ ] Proteger `/api/tasks` con `[Authorize]`.
 - [ ] Asociar `UserId` al crear tareas.

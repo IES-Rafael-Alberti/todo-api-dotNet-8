@@ -27,4 +27,7 @@ public class TodoTask
     public DateTime DueDate { get; set; }
 
     public TaskStatus Status { get; set; }
+
+    public int UserId { get; set; }
+    public User? User { get; set; }
 }
