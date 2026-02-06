@@ -13,6 +13,39 @@
 
   <main class="grid">
     <section class="panel">
+      <h2>Auth</h2>
+      <form id="authForm">
+        <label>
+          Usuario
+          <input id="authUsername" placeholder="ana" />
+        </label>
+
+        <label>
+          Email
+          <input id="authEmail" type="email" placeholder="ana@example.com" required />
+        </label>
+
+        <label>
+          Password
+          <input id="authPassword" type="password" placeholder="******" required />
+        </label>
+
+        <div class="row">
+          <button type="button" id="registerBtn">Registro</button>
+          <button type="button" id="loginBtn">Login</button>
+        </div>
+
+        <div class="row">
+          <button type="button" id="logoutBtn">Logout</button>
+          <button type="button" id="clearTokenBtn">Limpiar token</button>
+        </div>
+      </form>
+
+      <div class="tokenBox">
+        <strong>JWT actual</strong>
+        <pre id="tokenBox">(sin token)</pre>
+      </div>
+
       <h2>Tareas</h2>
 
       <form id="taskForm">

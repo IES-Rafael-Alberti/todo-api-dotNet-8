@@ -344,9 +344,10 @@ Nota:
 - [x] Migracion EF (Users + UserId).
 - [x] Tests de auth y proteccion de `/api/tasks`.
 - [x] Pruebas manuales documentadas (curl/httpie).
+- [x] Frontend minimo de auth integrado.
 
 ### Estado
-- Iteracion 2 cerrada (backend y pruebas manuales).
+- Iteracion 2 cerrada (backend + pruebas manuales + frontend minimo).
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
@@ -366,8 +367,8 @@ Nota:
 - [x] Tests de acceso protegido a `/api/tasks`.
 
 ### Por hacer (frontend)
-- [ ] UI minima para login/registro (si se decide en Iteracion 2).
-- [ ] Guardar y enviar token JWT en `fetch()`.
+- [x] UI minima para login/registro (panel integrado).
+- [x] Guardar y enviar token JWT en `fetch()`.
 
 ### Por hacer (documentacion)
 - [ ] Revisar y ajustar ejemplos de config JWT si cambian nombres finales.

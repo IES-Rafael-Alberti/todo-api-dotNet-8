@@ -1,11 +1,37 @@
 const API = "/api/tasks";
+const AUTH = "/api/auth";
 
 const taskList = document.getElementById("taskList");
 const form = document.getElementById("taskForm");
 const resetBtn = document.getElementById("resetBtn");
 
+const authForm = document.getElementById("authForm");
+const registerBtn = document.getElementById("registerBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const clearTokenBtn = document.getElementById("clearTokenBtn");
+const tokenBox = document.getElementById("tokenBox");
+
 const reqBox = document.getElementById("reqBox");
 const resBox = document.getElementById("resBox");
+
+function getToken() {
+  return localStorage.getItem("jwt") || "";
+}
+
+function setToken(token) {
+  if (token) {
+    localStorage.setItem("jwt", token);
+  } else {
+    localStorage.removeItem("jwt");
+  }
+  renderToken();
+}
+
+function renderToken() {
+  const token = getToken();
+  tokenBox.textContent = token ? token : "(sin token)";
+}
 
 function headersToObj(headers) {
   const obj = {};
@@ -23,6 +49,8 @@ function showResponse(status, headers, body) {
 
 async function apiFetch(method, url, body) {
   const headers = { "Content-Type": "application/json" };
+  const token = getToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   showRequest(method, url, headers, body ?? null);
 
   const res = await fetch(url, {
@@ -60,6 +88,37 @@ function getFormData() {
   const dueDate = dueDateLocal ? new Date(dueDateLocal).toISOString() : null;
 
   return { id, title, description, dueDate, status };
+}
+
+function getAuthData() {
+  const username = document.getElementById("authUsername").value.trim();
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  return { username, email, password };
+}
+
+async function register() {
+  const { username, email, password } = getAuthData();
+  const payload = { username, email, password };
+  const result = await apiFetch("POST", `${AUTH}/register`, payload);
+  setToken(result.token);
+}
+
+async function login() {
+  const { email, password } = getAuthData();
+  const payload = { email, password };
+  const result = await apiFetch("POST", `${AUTH}/login`, payload);
+  setToken(result.token);
+}
+
+async function logout() {
+  try {
+    await apiFetch("POST", `${AUTH}/logout`);
+  } catch (err) {
+    console.error(err);
+  }
+  setToken("");
 }
 
 function fillForm(task) {
@@ -150,4 +209,33 @@ resetBtn.addEventListener("click", () => {
   document.getElementById("taskId").value = "";
 });
 
+registerBtn.addEventListener("click", async () => {
+  try {
+    await register();
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+loginBtn.addEventListener("click", async () => {
+  try {
+    await login();
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  await logout();
+});
+
+clearTokenBtn.addEventListener("click", () => {
+  setToken("");
+});
+
+authForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+});
+
+renderToken();
 refresh().catch(console.error);

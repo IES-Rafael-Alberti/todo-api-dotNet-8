@@ -21,6 +21,14 @@ main.grid {
     border-radius: 10px;
 }
 
+.tokenBox {
+    margin: 12px 0 24px;
+}
+
+.tokenBox pre {
+    max-height: 140px;
+}
+
 label {
     display: block;
     margin: 10px 0;

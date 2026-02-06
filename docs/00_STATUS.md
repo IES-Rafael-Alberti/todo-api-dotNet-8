@@ -34,6 +34,7 @@ Hecho:
 - Tests de auth (registro/login) añadidos.
 - Test de proteccion en `/api/tasks` (Authorize).
 - Pruebas manuales con curl/httpie documentadas.
+- Frontend: login/registro + envio de JWT integrado en panel.
 
 Pendiente (codigo):
 
@@ -41,14 +42,14 @@ Pendiente (tests):
 - (Nada pendiente si no se pide mas cobertura).
 
 Pendiente (frontend):
-- UI minima de login/registro y envio de JWT (a continuacion).
+- (Nada pendiente si no se pide ampliacion).
 
 Pendiente (frontend, si se decide):
 - UI minima de login/registro.
 - Guardar/enviar JWT en `fetch()`.
 
 ### Decision actual
-Iteracion 2 cerrada en backend + docs. Siguiente: frontend login/registro.
+Iteracion 2 cerrada (backend + tests + frontend minimo).
 
 ### Notas de versiones
 - En casa se usa .NET 10.
