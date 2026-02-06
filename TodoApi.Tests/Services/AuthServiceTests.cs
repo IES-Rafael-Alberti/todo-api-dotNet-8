@@ -21,7 +21,8 @@ public class AuthServiceTests
         _usersMock = new Mock<IUsersRepository>();
         _jwtMock = new Mock<IJwtTokenService>();
 
-        var options = Options.Create(new JwtOptions { ExpiresInSeconds = 3600 });
+        var options = Microsoft.Extensions.Options.Options.Create(
+            new JwtOptions { ExpiresInSeconds = 3600 });
         _service = new AuthService(_usersMock.Object, _jwtMock.Object, options);
     }
 
