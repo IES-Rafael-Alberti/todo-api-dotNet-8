@@ -339,6 +339,7 @@ Nota:
 - [x] Casos de prueba de auth añadidos en `docs/04_API_TESTING.md`.
 - [x] Repositorio de usuarios + servicio de JWT base.
 - [x] Configuracion JWT en `Program.cs` y `appsettings.json`.
+- [x] `AuthController` y proteccion de `/api/tasks`.
 
 ### Hecho (pendiente de posible ajuste)
 - [x] Ejemplo de configuracion JWT en `appsettings.json` y `Program.cs` (puede ajustarse al implementar).
@@ -349,7 +350,7 @@ Nota:
 - [x] Crear `IAuthService` y `AuthService`.
 - [x] Implementar hashing de password.
 - [x] Configurar JWT en `Program.cs` y `appsettings.json`.
-- [ ] Proteger `/api/tasks` con `[Authorize]`.
+- [x] Proteger `/api/tasks` con `[Authorize]`.
 - [ ] Asociar `UserId` al crear tareas.
 - [ ] Crear migracion y aplicar en SQLite.
 

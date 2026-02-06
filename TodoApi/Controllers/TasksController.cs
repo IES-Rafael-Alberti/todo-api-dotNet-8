@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoApi.DTOs;
 using TodoApi.Models;
@@ -8,6 +9,8 @@ namespace TodoApi.Controllers;
 [ApiController]
 // [Route] define la ruta base del recurso.
 [Route("api/tasks")]
+// Protegido por JWT (equivalente a @PreAuthorize en Spring).
+[Authorize]
 // Hereda de ControllerBase para usar helpers de API (Ok, CreatedAtAction, etc.).
 public class TasksController : ControllerBase
 {
