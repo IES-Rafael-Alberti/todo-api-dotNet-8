@@ -229,6 +229,8 @@ dotnet dev-certs https --trust
 - Guardar token en `localStorage`.
 - Enviar `Authorization: Bearer <jwt>` en `fetch()`.
 - Boton logout → borrar token.
+- Toggle para activar/desactivar envio de token (demostracion de 401).
+- Mostrar `exp` decodificado del JWT para ver la caducidad.
 
 ---
 
