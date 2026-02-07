@@ -28,11 +28,32 @@ public class TasksEfRepository : ITasksRepository
             .ToList();
     }
 
+    public IEnumerable<TodoTask> GetAllByUser(int userId, TaskStatus? status = null)
+    {
+        var query = _db.Tasks.AsNoTracking()
+            .Where(t => t.UserId == userId)
+            .AsQueryable();
+
+        if (status is not null)
+            query = query.Where(t => t.Status == status);
+
+        return query
+            .OrderBy(t => t.Status == TaskStatus.Completed ? 1 : 0)
+            .ThenByDescending(t => t.CreationDate)
+            .ToList();
+    }
+
     public TodoTask? GetById(int id)
     {
         // FirstOrDefault devuelve null si no existe.
         return _db.Tasks.AsNoTracking()
             .FirstOrDefault(t => t.Id == id);
+    }
+
+    public TodoTask? GetByIdForUser(int id, int userId)
+    {
+        return _db.Tasks.AsNoTracking()
+            .FirstOrDefault(t => t.Id == id && t.UserId == userId);
     }
 
     public TodoTask Add(TodoTask task)

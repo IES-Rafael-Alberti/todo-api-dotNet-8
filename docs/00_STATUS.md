@@ -48,8 +48,24 @@ Pendiente (frontend, si se decide):
 - UI minima de login/registro.
 - Guardar/enviar JWT en `fetch()`.
 
+### Iteracion 3
+Hecho:
+- Documento base creado.
+
+Pendiente (codigo):
+- Ajustar repositorio para filtrar por usuario.
+- Ajustar servicio para validar propiedad.
+- Ajustar controlador para pasar `userId`.
+
+Pendiente (tests):
+- Tests de acceso a tareas propias.
+- Tests de acceso a tareas ajenas → `403`.
+
+Pendiente (documentacion):
+- Añadir pruebas de propiedad en `docs/04_API_TESTING.md`.
+
 ### Decision actual
-Iteracion 2 cerrada (backend + tests + frontend minimo).
+Iteracion 3 en curso: empezando por repositorio.
 
 ### Notas de versiones
 - En casa se usa .NET 10.

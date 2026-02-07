@@ -23,10 +23,27 @@ public class TasksInMemoryRepository : ITasksRepository
             .ThenByDescending(t => t.CreationDate);
     }
 
+    // Devuelve las tareas de un usuario concreto.
+    public IEnumerable<TodoTask> GetAllByUser(int userId, TaskStatus? status = null)
+    {
+        var query = _tasks.Where(t => t.UserId == userId);
+        if (status is not null)
+            query = query.Where(t => t.Status == status);
+
+        return query
+            .OrderBy(t => t.Status == TaskStatus.Completed ? 1 : 0)
+            .ThenByDescending(t => t.CreationDate);
+    }
+
     // Busca por id usando LINQ.
     public TodoTask? GetById(int id)
     {
         return _tasks.FirstOrDefault(t => t.Id == id);
+    }
+
+    public TodoTask? GetByIdForUser(int id, int userId)
+    {
+        return _tasks.FirstOrDefault(t => t.Id == id && t.UserId == userId);
     }
 
     // Asigna un id incremental y guarda.
