@@ -62,12 +62,12 @@ Restringir el acceso a tareas para que **cada usuario solo vea y modifique las s
 
 ### Por hacer (codigo)
 - [x] Ajustar repositorio para filtrar por usuario.
-- [ ] Ajustar servicio para validar propiedad.
-- [ ] Ajustar controlador para pasar `userId`.
+- [x] Ajustar servicio para validar propiedad.
+- [x] Ajustar controlador para pasar `userId`.
 
 ### Por hacer (tests)
-- [ ] Tests de acceso a tareas propias.
-- [ ] Tests de acceso a tareas ajenas → `403`.
+- [x] Tests de acceso a tareas propias.
+- [x] Tests de acceso a tareas ajenas → `403`.
 
 ### Por hacer (documentacion)
-- [ ] Añadir pruebas de propiedad en `docs/04_API_TESTING.md`.
+- [x] Añadir pruebas de propiedad en `docs/04_API_TESTING.md`.

@@ -54,6 +54,15 @@ public class ErrorHandlingMiddleware
                 message = ex.Message
             });
         }
+        catch (ForbiddenException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = ex.ErrorCode,
+                message = ex.Message
+            });
+        }
         catch (Exception)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;

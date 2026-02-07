@@ -29,11 +29,12 @@ public class TasksServiceTests
             Description = null,
             CreationDate = DateTime.UtcNow.AddMinutes(-10),
             DueDate = DateTime.UtcNow.AddDays(1),
-            Status = TaskStatus.Pending
+            Status = TaskStatus.Pending,
+            UserId = 7
         };
         _repoMock.Setup(r => r.GetById(1)).Returns(task);
 
-        var result = _service.GetById(1);
+        var result = _service.GetById(1, userId: 7);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
@@ -45,7 +46,7 @@ public class TasksServiceTests
     {
         _repoMock.Setup(r => r.GetById(99)).Returns((TodoTask?)null);
 
-        Assert.Throws<NotFoundException>(() => _service.GetById(99));
+        Assert.Throws<NotFoundException>(() => _service.GetById(99, userId: 1));
     }
 
     [Fact]
@@ -70,5 +71,82 @@ public class TasksServiceTests
 
         Assert.Equal("Nueva tarea", result.Title);
         Assert.Equal(TaskStatus.Pending, result.Status);
+    }
+
+    [Fact]
+    public void GetById_WhenTaskBelongsToOtherUser_ThrowsForbidden()
+    {
+        _repoMock.Setup(r => r.GetById(1)).Returns(new TodoTask
+        {
+            Id = 1,
+            Title = "Privada",
+            CreationDate = DateTime.UtcNow,
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending,
+            UserId = 2
+        });
+
+        Assert.Throws<ForbiddenException>(() => _service.GetById(1, userId: 1));
+    }
+
+    [Fact]
+    public void GetAll_UsesRepositoryFilterByUser()
+    {
+        _repoMock.Setup(r => r.GetAllByUser(5, null)).Returns(new[]
+        {
+            new TodoTask
+            {
+                Id = 1,
+                Title = "Solo del usuario 5",
+                CreationDate = DateTime.UtcNow,
+                DueDate = DateTime.UtcNow.AddDays(1),
+                Status = TaskStatus.Pending,
+                UserId = 5
+            }
+        });
+
+        var result = _service.GetAll(userId: 5).ToList();
+
+        Assert.Single(result);
+        Assert.Equal("Solo del usuario 5", result[0].Title);
+    }
+
+    [Fact]
+    public void Update_WhenTaskBelongsToOtherUser_ThrowsForbidden()
+    {
+        _repoMock.Setup(r => r.GetById(1)).Returns(new TodoTask
+        {
+            Id = 1,
+            Title = "Ajena",
+            CreationDate = DateTime.UtcNow.AddHours(-1),
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending,
+            UserId = 9
+        });
+
+        var dto = new TaskUpdateDto
+        {
+            Title = "Editar",
+            DueDate = DateTime.UtcNow.AddDays(2),
+            Status = TaskStatus.InProgress
+        };
+
+        Assert.Throws<ForbiddenException>(() => _service.Update(1, dto, userId: 1));
+    }
+
+    [Fact]
+    public void Delete_WhenTaskBelongsToOtherUser_ThrowsForbidden()
+    {
+        _repoMock.Setup(r => r.GetById(1)).Returns(new TodoTask
+        {
+            Id = 1,
+            Title = "Ajena",
+            CreationDate = DateTime.UtcNow.AddHours(-1),
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending,
+            UserId = 9
+        });
+
+        Assert.Throws<ForbiddenException>(() => _service.Delete(1, userId: 1));
     }
 }

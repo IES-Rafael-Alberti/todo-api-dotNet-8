@@ -103,3 +103,57 @@ http GET :5000/api/tasks "Authorization:Bearer <jwt>"
 ### Casos de error a probar
 - Acceder a `/api/tasks` sin token → `401 Unauthorized`.
 - Login con password incorrecto → `401 Unauthorized`.
+
+---
+
+## Pruebas de la API (Iteracion 3)
+
+> Nota: requiere dos usuarios autenticados (A y B).
+
+### Flujo de propiedad (curl)
+
+#### 1) Usuario A crea una tarea
+```bash
+curl -X POST http://localhost:5000/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt_usuario_A>" \
+  -d '{
+    "title": "Tarea privada de A",
+    "description": "Solo A puede tocarla",
+    "dueDate": "2026-12-31T23:59:00Z",
+    "status": "Pending"
+  }'
+```
+
+#### 2) Usuario B intenta leer esa tarea
+```bash
+curl http://localhost:5000/api/tasks/1 \
+  -H "Authorization: Bearer <jwt_usuario_B>"
+```
+Esperado: `403 Forbidden`.
+
+#### 3) Usuario A la edita
+```bash
+curl -X PUT http://localhost:5000/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt_usuario_A>" \
+  -d '{
+    "title": "Tarea privada de A (editada)",
+    "description": "Editada por su propietario",
+    "dueDate": "2026-12-31T23:59:00Z",
+    "status": "InProgress"
+  }'
+```
+Esperado: `204 No Content`.
+
+#### 4) Usuario B intenta borrarla
+```bash
+curl -X DELETE http://localhost:5000/api/tasks/1 \
+  -H "Authorization: Bearer <jwt_usuario_B>"
+```
+Esperado: `403 Forbidden`.
+
+### Casos de error a probar
+- Acceder a tarea ajena por `GET /api/tasks/{id}` → `403 Forbidden`.
+- Editar tarea ajena por `PUT /api/tasks/{id}` → `403 Forbidden`.
+- Borrar tarea ajena por `DELETE /api/tasks/{id}` → `403 Forbidden`.

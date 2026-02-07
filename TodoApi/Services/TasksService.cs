@@ -18,19 +18,23 @@ public class TasksService : ITasksService
         _repository = repository;
     }
 
-    public IEnumerable<TaskReadDto> GetAll(TaskStatus? status = null)
+    public IEnumerable<TaskReadDto> GetAll(int userId, TaskStatus? status = null)
     {
         // Select aplica el mapeo a cada elemento (similar a stream().map()).
-        return _repository.GetAll(status)
+        return _repository.GetAllByUser(userId, status)
             .Select(t => t.ToReadDto());
     }
 
-    public TaskReadDto? GetById(int id)
+    public TaskReadDto? GetById(int id, int userId)
     {
         // Lanza excepcion de dominio si no existe (se traduce a 404).
         var task = _repository.GetById(id);
         if (task == null)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
+        if (task.UserId != userId)
+            throw new ForbiddenException(
+                errorCode: "TASK_FORBIDDEN",
+                message: "No tienes permisos para acceder a esta tarea.");
         return task.ToReadDto();
     }
 
@@ -55,7 +59,7 @@ public class TasksService : ITasksService
         return created.ToReadDto();
     }
 
-    public void Update(int id, TaskUpdateDto dto)
+    public void Update(int id, TaskUpdateDto dto, int userId)
     {
         if (dto.DueDate is null)
             throw new BadRequestException(
@@ -65,6 +69,10 @@ public class TasksService : ITasksService
         var existing = _repository.GetById(id);
         if (existing == null)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
+        if (existing.UserId != userId)
+            throw new ForbiddenException(
+                errorCode: "TASK_FORBIDDEN",
+                message: "No tienes permisos para modificar esta tarea.");
 
         if (dto.DueDate.Value < existing.CreationDate)
             throw new BadRequestException(
@@ -84,8 +92,16 @@ public class TasksService : ITasksService
             throw new NotFoundException($"No existe la tarea con ID {id}.");
     }
 
-    public void Delete(int id)
+    public void Delete(int id, int userId)
     {
+        var existing = _repository.GetById(id);
+        if (existing == null)
+            throw new NotFoundException($"No existe la tarea con ID {id}.");
+        if (existing.UserId != userId)
+            throw new ForbiddenException(
+                errorCode: "TASK_FORBIDDEN",
+                message: "No tienes permisos para eliminar esta tarea.");
+
         var deleted = _repository.Delete(id);
         if (!deleted)
             throw new NotFoundException($"No existe la tarea con ID {id}.");

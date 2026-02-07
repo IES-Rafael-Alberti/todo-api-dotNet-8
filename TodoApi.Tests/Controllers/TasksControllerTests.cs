@@ -24,10 +24,25 @@ public class TasksControllerTests
         _controller = new TasksController(_serviceMock.Object);
     }
 
+    private void SetUser(int userId)
+    {
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())
+                }, "test"))
+            }
+        };
+    }
+
     [Fact]
     public void GetAll_ReturnsOkWithTasks()
     {
-        _serviceMock.Setup(s => s.GetAll(It.IsAny<TaskStatus?>())).Returns(new[]
+        SetUser(1);
+        _serviceMock.Setup(s => s.GetAll(1, It.IsAny<TaskStatus?>())).Returns(new[]
         {
             new TaskReadDto
             {
@@ -67,18 +82,8 @@ public class TasksControllerTests
             Status = TaskStatus.Pending
         };
 
-        _serviceMock.Setup(s => s.Create(dto, It.IsAny<int>())).Returns(created);
-
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, "1")
-                }, "test"))
-            }
-        };
+        SetUser(1);
+        _serviceMock.Setup(s => s.Create(dto, 1)).Returns(created);
 
         var result = _controller.Create(dto);
 

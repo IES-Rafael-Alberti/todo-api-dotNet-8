@@ -51,21 +51,26 @@ Pendiente (frontend, si se decide):
 ### Iteracion 3
 Hecho:
 - Documento base creado.
+- Repositorio con filtros por usuario (`GetAllByUser`, `GetByIdForUser`).
+- Servicio con validacion de propiedad y `403 Forbidden`.
+- Controlador ajustado para pasar `userId` en todas las operaciones.
+- Pruebas de propiedad añadidas en `docs/04_API_TESTING.md`.
+- Tests de Iteracion 3 en verde.
 
 Pendiente (codigo):
-- Ajustar repositorio para filtrar por usuario.
-- Ajustar servicio para validar propiedad.
-- Ajustar controlador para pasar `userId`.
+- (Nada pendiente de codigo en este bloque: repo+service+controller listos).
 
 Pendiente (tests):
-- Tests de acceso a tareas propias.
-- Tests de acceso a tareas ajenas → `403`.
+- (Nada pendiente si no se pide mas cobertura).
 
 Pendiente (documentacion):
-- Añadir pruebas de propiedad en `docs/04_API_TESTING.md`.
+- (Nada pendiente para cierre de Iteracion 3).
 
 ### Decision actual
-Iteracion 3 en curso: empezando por repositorio.
+Iteracion 3 cerrada. Siguiente paso: planificar Iteracion 4 (roles).
+
+### Ultimo paso realizado (para retomar)
+- Commit: `feat: filter tasks by user in repository (Iteration 3)`.
 
 ### Notas de versiones
 - En casa se usa .NET 10.

@@ -5,9 +5,9 @@ namespace TodoApi.Services;
 
 public interface ITasksService
 {
-    IEnumerable<TaskReadDto> GetAll(TaskStatus? status = null);
-    TaskReadDto? GetById(int id);
+    IEnumerable<TaskReadDto> GetAll(int userId, TaskStatus? status = null);
+    TaskReadDto? GetById(int id, int userId);
     TaskReadDto Create(TaskCreateDto dto, int userId);
-    void Update(int id, TaskUpdateDto dto);
-    void Delete(int id);
+    void Update(int id, TaskUpdateDto dto, int userId);
+    void Delete(int id, int userId);
 }
