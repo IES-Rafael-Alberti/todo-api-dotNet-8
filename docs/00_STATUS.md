@@ -77,6 +77,7 @@ Hecho:
 - Tests de integracion HTTP para autorizacion por rol en verde.
 - Guia docente de integracion en `docs/08_INTEGRATION_TESTS_GUIDE.md`.
 - Swagger UI restaurado con configuracion compatible.
+- Guion de demo en clase en `docs/09_CLASS_DEMO_SCRIPT.md`.
 
 Pendiente (documentacion):
 - (Nada pendiente para cierre de Iteracion 4 en backend/docs).
@@ -91,6 +92,7 @@ Iteracion 4 cerrada en backend y documentacion.
 - Estado: iteraciones 1, 2, 3 y 4 cerradas.
 - Siguiente paso sugerido:
 - Preparar demo final en clase con `docs/04_API_TESTING.md` + `docs/08_INTEGRATION_TESTS_GUIDE.md`.
+- Ejecutar demo guiada con `docs/09_CLASS_DEMO_SCRIPT.md`.
 
 ### Notas de versiones
 - En casa se usa .NET 10.
