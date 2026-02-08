@@ -45,7 +45,4 @@ Para tests de integracion:
 dotnet test TodoApi.Tests/TodoApi.Tests.csproj --filter "FullyQualifiedName~Integration"
 ```
 
-### Guion de clase
-- `docs/09_CLASS_DEMO_SCRIPT.md` (demo guiada de 8-10 minutos).
-
 ---
