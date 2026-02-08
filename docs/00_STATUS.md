@@ -67,7 +67,19 @@ Pendiente (documentacion):
 - (Nada pendiente para cierre de Iteracion 3).
 
 ### Decision actual
-Iteracion 3 cerrada. Siguiente paso: planificar Iteracion 4 (roles).
+Iteracion 3 cerrada.
+
+### Iteracion 4
+Hecho:
+- Documento base `docs/07_ITERATION_4_ROLES.md`.
+- Reglas por rol implementadas en servicio/controlador.
+- Tests de roles en verde.
+
+Pendiente (documentacion):
+- (Nada pendiente para cierre de Iteracion 4 en backend/docs).
+
+### Decision actual
+Iteracion 4 cerrada en backend y documentacion.
 
 ### Ultimo paso realizado (para retomar)
 - Commit: `feat: filter tasks by user in repository (Iteration 3)`.

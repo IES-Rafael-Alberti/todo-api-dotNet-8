@@ -34,7 +34,7 @@ public class TasksServiceTests
         };
         _repoMock.Setup(r => r.GetById(1)).Returns(task);
 
-        var result = _service.GetById(1, userId: 7);
+        var result = _service.GetById(1, userId: 7, role: UserRole.User);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
@@ -46,7 +46,7 @@ public class TasksServiceTests
     {
         _repoMock.Setup(r => r.GetById(99)).Returns((TodoTask?)null);
 
-        Assert.Throws<NotFoundException>(() => _service.GetById(99, userId: 1));
+        Assert.Throws<NotFoundException>(() => _service.GetById(99, userId: 1, role: UserRole.User));
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class TasksServiceTests
             UserId = 2
         });
 
-        Assert.Throws<ForbiddenException>(() => _service.GetById(1, userId: 1));
+        Assert.Throws<ForbiddenException>(() => _service.GetById(1, userId: 1, role: UserRole.User));
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class TasksServiceTests
             }
         });
 
-        var result = _service.GetAll(userId: 5).ToList();
+        var result = _service.GetAll(userId: 5, role: UserRole.User).ToList();
 
         Assert.Single(result);
         Assert.Equal("Solo del usuario 5", result[0].Title);
@@ -131,7 +131,7 @@ public class TasksServiceTests
             Status = TaskStatus.InProgress
         };
 
-        Assert.Throws<ForbiddenException>(() => _service.Update(1, dto, userId: 1));
+        Assert.Throws<ForbiddenException>(() => _service.Update(1, dto, userId: 1, role: UserRole.User));
     }
 
     [Fact]
@@ -147,6 +147,88 @@ public class TasksServiceTests
             UserId = 9
         });
 
-        Assert.Throws<ForbiddenException>(() => _service.Delete(1, userId: 1));
+        Assert.Throws<ForbiddenException>(() => _service.Delete(1, userId: 1, role: UserRole.User));
+    }
+
+    [Fact]
+    public void GetAll_WhenSupervisor_ReturnsRepositoryGetAll()
+    {
+        _repoMock.Setup(r => r.GetAll(null)).Returns(new[]
+        {
+            new TodoTask
+            {
+                Id = 10,
+                Title = "Global",
+                CreationDate = DateTime.UtcNow,
+                DueDate = DateTime.UtcNow.AddDays(1),
+                Status = TaskStatus.Pending,
+                UserId = 99
+            }
+        });
+
+        var result = _service.GetAll(userId: 5, role: UserRole.Supervisor).ToList();
+
+        Assert.Single(result);
+        Assert.Equal(10, result[0].Id);
+    }
+
+    [Fact]
+    public void Update_WhenSupervisorCompletesForeignTask_ThrowsForbidden()
+    {
+        _repoMock.Setup(r => r.GetById(1)).Returns(new TodoTask
+        {
+            Id = 1,
+            Title = "Ajena",
+            CreationDate = DateTime.UtcNow.AddHours(-1),
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.InProgress,
+            UserId = 9
+        });
+
+        var dto = new TaskUpdateDto
+        {
+            Title = "Editar",
+            DueDate = DateTime.UtcNow.AddDays(2),
+            Status = TaskStatus.Completed
+        };
+
+        Assert.Throws<ForbiddenException>(() =>
+            _service.Update(1, dto, userId: 1, role: UserRole.Supervisor));
+    }
+
+    [Fact]
+    public void Delete_WhenSupervisorDeletesForeignTask_ThrowsForbidden()
+    {
+        _repoMock.Setup(r => r.GetById(1)).Returns(new TodoTask
+        {
+            Id = 1,
+            Title = "Ajena",
+            CreationDate = DateTime.UtcNow.AddHours(-1),
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending,
+            UserId = 9
+        });
+
+        Assert.Throws<ForbiddenException>(() =>
+            _service.Delete(1, userId: 1, role: UserRole.Supervisor));
+    }
+
+    [Fact]
+    public void Delete_WhenAdminDeletesForeignTask_Allows()
+    {
+        _repoMock.Setup(r => r.GetById(1)).Returns(new TodoTask
+        {
+            Id = 1,
+            Title = "Ajena",
+            CreationDate = DateTime.UtcNow.AddHours(-1),
+            DueDate = DateTime.UtcNow.AddDays(1),
+            Status = TaskStatus.Pending,
+            UserId = 9
+        });
+        _repoMock.Setup(r => r.Delete(1)).Returns(true);
+
+        _service.Delete(1, userId: 1, role: UserRole.Admin);
+
+        _repoMock.Verify(r => r.Delete(1), Times.Once);
     }
 }

@@ -24,7 +24,7 @@ public class TasksControllerTests
         _controller = new TasksController(_serviceMock.Object);
     }
 
-    private void SetUser(int userId)
+    private void SetUser(int userId, UserRole role = UserRole.User)
     {
         _controller.ControllerContext = new ControllerContext
         {
@@ -32,7 +32,8 @@ public class TasksControllerTests
             {
                 User = new ClaimsPrincipal(new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())
+                    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                    new Claim(ClaimTypes.Role, role.ToString())
                 }, "test"))
             }
         };
@@ -42,7 +43,7 @@ public class TasksControllerTests
     public void GetAll_ReturnsOkWithTasks()
     {
         SetUser(1);
-        _serviceMock.Setup(s => s.GetAll(1, It.IsAny<TaskStatus?>())).Returns(new[]
+        _serviceMock.Setup(s => s.GetAll(1, UserRole.User, It.IsAny<TaskStatus?>())).Returns(new[]
         {
             new TaskReadDto
             {

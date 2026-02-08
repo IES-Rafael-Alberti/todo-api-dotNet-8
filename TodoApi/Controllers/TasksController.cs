@@ -28,16 +28,18 @@ public class TasksController : ControllerBase
     public ActionResult<IEnumerable<TaskReadDto>> GetAll([FromQuery] TaskStatus? status)
     {
         var userId = GetUserId();
+        var role = GetUserRole();
         // 200 OK con la lista de tareas.
-        return Ok(_service.GetAll(userId, status));
+        return Ok(_service.GetAll(userId, role, status));
     }
 
     [HttpGet("{id}")]
     public ActionResult<TaskReadDto> GetById(int id)
     {
         var userId = GetUserId();
+        var role = GetUserRole();
         // {id} en la ruta se enlaza al parametro id.
-        return Ok(_service.GetById(id, userId));
+        return Ok(_service.GetById(id, userId, role));
     }
 
     [HttpPost]
@@ -53,8 +55,9 @@ public class TasksController : ControllerBase
     public IActionResult Update(int id, TaskUpdateDto dto)
     {
         var userId = GetUserId();
+        var role = GetUserRole();
         // 204 NoContent cuando la actualizacion es correcta.
-        _service.Update(id, dto, userId);
+        _service.Update(id, dto, userId, role);
         return NoContent();
     }
 
@@ -62,8 +65,9 @@ public class TasksController : ControllerBase
     public IActionResult Delete(int id)
     {
         var userId = GetUserId();
+        var role = GetUserRole();
         // 204 NoContent al borrar.
-       _service.Delete(id, userId);
+       _service.Delete(id, userId, role);
        return NoContent();
     }
 
@@ -79,5 +83,21 @@ public class TasksController : ControllerBase
                 "Token invalido o sin identificador de usuario.");
 
         return userId;
+    }
+
+    private UserRole GetUserRole()
+    {
+        var roleClaim = User.FindFirstValue(ClaimTypes.Role)
+            ?? User.FindFirstValue("role");
+
+        if (string.IsNullOrWhiteSpace(roleClaim)
+            || !Enum.TryParse<UserRole>(roleClaim, ignoreCase: true, out var role))
+        {
+            throw new TodoApi.Exceptions.UnauthorizedException(
+                "INVALID_TOKEN_ROLE",
+                "Token invalido o sin rol de usuario.");
+        }
+
+        return role;
     }
 }

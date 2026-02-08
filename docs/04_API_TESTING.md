@@ -157,3 +157,60 @@ Esperado: `403 Forbidden`.
 - Acceder a tarea ajena por `GET /api/tasks/{id}` → `403 Forbidden`.
 - Editar tarea ajena por `PUT /api/tasks/{id}` → `403 Forbidden`.
 - Borrar tarea ajena por `DELETE /api/tasks/{id}` → `403 Forbidden`.
+
+---
+
+## Pruebas de la API (Iteracion 4)
+
+> Nota: requiere tokens de un `User`, un `Supervisor` y un `Admin`.
+
+### Escenarios de rol (curl)
+
+#### 1) Supervisor lista todas las tareas
+```bash
+curl http://localhost:5000/api/tasks \
+  -H "Authorization: Bearer <jwt_supervisor>"
+```
+Esperado: ve tareas propias y ajenas.
+
+#### 2) Supervisor edita tarea ajena sin completar
+```bash
+curl -X PUT http://localhost:5000/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt_supervisor>" \
+  -d '{
+    "title": "Ajuste supervisor",
+    "description": "Edicion permitida",
+    "dueDate": "2026-12-31T23:59:00Z",
+    "status": "InProgress"
+  }'
+```
+Esperado: `204 No Content`.
+
+#### 3) Supervisor intenta completar tarea ajena
+```bash
+curl -X PUT http://localhost:5000/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt_supervisor>" \
+  -d '{
+    "title": "No permitido",
+    "description": "Intento de completar ajena",
+    "dueDate": "2026-12-31T23:59:00Z",
+    "status": "Completed"
+  }'
+```
+Esperado: `403 Forbidden`.
+
+#### 4) Supervisor intenta borrar tarea ajena
+```bash
+curl -X DELETE http://localhost:5000/api/tasks/1 \
+  -H "Authorization: Bearer <jwt_supervisor>"
+```
+Esperado: `403 Forbidden`.
+
+#### 5) Admin borra tarea ajena
+```bash
+curl -X DELETE http://localhost:5000/api/tasks/1 \
+  -H "Authorization: Bearer <jwt_admin>"
+```
+Esperado: `204 No Content`.

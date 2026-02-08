@@ -18,20 +18,25 @@ public class TasksService : ITasksService
         _repository = repository;
     }
 
-    public IEnumerable<TaskReadDto> GetAll(int userId, TaskStatus? status = null)
+    public IEnumerable<TaskReadDto> GetAll(int userId, UserRole role, TaskStatus? status = null)
     {
+        // Supervisor/Admin ven todas; User solo las suyas.
+        var tasks = role is UserRole.Supervisor or UserRole.Admin
+            ? _repository.GetAll(status)
+            : _repository.GetAllByUser(userId, status);
+
         // Select aplica el mapeo a cada elemento (similar a stream().map()).
-        return _repository.GetAllByUser(userId, status)
+        return tasks
             .Select(t => t.ToReadDto());
     }
 
-    public TaskReadDto? GetById(int id, int userId)
+    public TaskReadDto? GetById(int id, int userId, UserRole role)
     {
         // Lanza excepcion de dominio si no existe (se traduce a 404).
         var task = _repository.GetById(id);
         if (task == null)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
-        if (task.UserId != userId)
+        if (role == UserRole.User && task.UserId != userId)
             throw new ForbiddenException(
                 errorCode: "TASK_FORBIDDEN",
                 message: "No tienes permisos para acceder a esta tarea.");
@@ -59,7 +64,7 @@ public class TasksService : ITasksService
         return created.ToReadDto();
     }
 
-    public void Update(int id, TaskUpdateDto dto, int userId)
+    public void Update(int id, TaskUpdateDto dto, int userId, UserRole role)
     {
         if (dto.DueDate is null)
             throw new BadRequestException(
@@ -69,10 +74,18 @@ public class TasksService : ITasksService
         var existing = _repository.GetById(id);
         if (existing == null)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
-        if (existing.UserId != userId)
+        var isOwner = existing.UserId == userId;
+
+        if (role == UserRole.User && !isOwner)
             throw new ForbiddenException(
                 errorCode: "TASK_FORBIDDEN",
                 message: "No tienes permisos para modificar esta tarea.");
+
+        // Supervisor puede editar ajenas, pero no completarlas.
+        if (role == UserRole.Supervisor && !isOwner && dto.Status == TaskStatus.Completed)
+            throw new ForbiddenException(
+                errorCode: "SUPERVISOR_CANNOT_COMPLETE_FOREIGN_TASK",
+                message: "Supervisor no puede marcar como Completed tareas ajenas.");
 
         if (dto.DueDate.Value < existing.CreationDate)
             throw new BadRequestException(
@@ -92,15 +105,23 @@ public class TasksService : ITasksService
             throw new NotFoundException($"No existe la tarea con ID {id}.");
     }
 
-    public void Delete(int id, int userId)
+    public void Delete(int id, int userId, UserRole role)
     {
         var existing = _repository.GetById(id);
         if (existing == null)
             throw new NotFoundException($"No existe la tarea con ID {id}.");
-        if (existing.UserId != userId)
+
+        var isOwner = existing.UserId == userId;
+        if (role == UserRole.User && !isOwner)
             throw new ForbiddenException(
                 errorCode: "TASK_FORBIDDEN",
                 message: "No tienes permisos para eliminar esta tarea.");
+
+        // Supervisor no puede borrar tareas ajenas.
+        if (role == UserRole.Supervisor && !isOwner)
+            throw new ForbiddenException(
+                errorCode: "SUPERVISOR_CANNOT_DELETE_FOREIGN_TASK",
+                message: "Supervisor no puede borrar tareas ajenas.");
 
         var deleted = _repository.Delete(id);
         if (!deleted)
