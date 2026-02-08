@@ -45,7 +45,14 @@ Para tests de integracion:
 dotnet test TodoApi.Tests/TodoApi.Tests.csproj --filter "FullyQualifiedName~Integration"
 ```
 
+Guia especifica:
+- `docs/08_INTEGRATION_TESTS_GUIDE.md`
+- `docs/09_CLASS_DEMO_SCRIPT.md` (practica guiada API + frontend + seguridad)
+
 ### Despliegue AWS
 - `docs/10_AWS_DEPLOYMENT.md` (App Runner + ECR, paso a paso).
+- `docs/11_AWS_DEPLOYMENT_SIMPLIFIED.md` (guia simplificada para alumnado).
+- `docs/12_AWS_PRACTICE_ASSIGNMENT.md` (enunciado de la practica).
+- `docs/13_AWS_DELIVERY_TEMPLATE.md` (plantilla de entrega).
 
 ---
