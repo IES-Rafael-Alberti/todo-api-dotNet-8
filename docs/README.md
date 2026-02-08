@@ -1,4 +1,4 @@
-Proyecto docente para construir una **API REST** con **.NET (C#)** y un **frontend mínimo** en **HTML/JavaScript/CSS puro**, siguiendo un enfoque **iterativo** y **progresivo**.
+Proyecto para construir una **API REST** con **.NET (C#)** y un **frontend mínimo** en **HTML/JavaScript/CSS puro**, siguiendo un enfoque **iterativo** y **progresivo**.
 # README.md
 
 ## TO-DO API REST (.NET 8/9/10) + Frontend puro

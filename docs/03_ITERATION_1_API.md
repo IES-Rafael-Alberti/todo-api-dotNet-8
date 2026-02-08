@@ -40,7 +40,7 @@ Campos principales:
 
 Carpeta usada: `TodoApi/DTOs/`.
 
-> Nota docente: en .NET se usa mucho el termino **DTO**; en otros ecosistemas se puede ver **Contracts** para la misma idea.
+> Nota: en .NET se usa mucho el termino **DTO**; en otros ecosistemas se puede ver **Contracts** para la misma idea.
 
 ### TaskCreateDto
 - `Title`

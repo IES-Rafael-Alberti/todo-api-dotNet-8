@@ -14,7 +14,7 @@ Incorporar usuarios y autenticacion **JWT** con impacto minimo en el codigo exis
 - Proteger `/api/tasks` con `[Authorize]`.
 - Activar HTTPS en desarrollo.
 
-### Decisiones de diseno (docente)
+### Decisiones de diseno
 - **Sin ASP.NET Identity**: se implementa autenticacion sencilla para entender el flujo.
 - **JWT simple**: claims basicos (`sub`, `email`, `role`).
 - **Sin refresh tokens** en Iteracion 2.
@@ -206,7 +206,7 @@ app.UseAuthorization();
 
 ## Hashing de password (decidir en implementacion)
 
-Opciones posibles (docente):
+Opciones posibles:
 - `PasswordHasher<T>` de `Microsoft.AspNetCore.Identity` (sin Identity completo).
 - `Rfc2898DeriveBytes` (PBKDF2) con salt.
 
