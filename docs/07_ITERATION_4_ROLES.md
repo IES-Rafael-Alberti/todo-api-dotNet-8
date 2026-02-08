@@ -25,6 +25,7 @@ Aplicar autorizacion por rol sobre tareas, manteniendo la regla de propiedad de 
 - Supervisor no puede completar tarea ajena.
 - Supervisor no puede borrar tarea ajena.
 - Admin puede borrar tarea ajena.
+- Tests HTTP de integracion para `401/403/204` por rol.
 
 ### Checklist
 #### Hecho

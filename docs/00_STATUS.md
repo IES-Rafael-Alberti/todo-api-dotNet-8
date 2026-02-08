@@ -74,6 +74,7 @@ Hecho:
 - Documento base `docs/07_ITERATION_4_ROLES.md`.
 - Reglas por rol implementadas en servicio/controlador.
 - Tests de roles en verde.
+- Tests de integracion HTTP para autorizacion por rol en verde.
 
 Pendiente (documentacion):
 - (Nada pendiente para cierre de Iteracion 4 en backend/docs).

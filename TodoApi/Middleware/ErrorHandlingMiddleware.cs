@@ -5,11 +5,13 @@ namespace TodoApi.Middleware;
 public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IWebHostEnvironment _environment;
 
-    public ErrorHandlingMiddleware(RequestDelegate next)
+    public ErrorHandlingMiddleware(RequestDelegate next, IWebHostEnvironment environment)
     {
         // Delegate al siguiente middleware en la tuberia.
         _next = next;
+        _environment = environment;
     }
 
     public async Task Invoke(HttpContext context)
@@ -63,12 +65,15 @@ public class ErrorHandlingMiddleware
                 message = ex.Message
             });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new
             {
-                error = "Error interno del servidor"
+                error = "Error interno del servidor",
+                detail = _environment.IsDevelopment() || _environment.IsEnvironment("Testing")
+                    ? ex.Message
+                    : null
             });
         }
     }

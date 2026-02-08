@@ -21,14 +21,17 @@ builder.Services.AddControllers()
     });
 
 // Swagger/OpenAPI (solo en desarrollo).
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddEndpointsApiExplorer();
+}
 
 // DbContext de EF Core con SQLite (cadena en appsettings.json).
 builder.Services.AddDbContext<TodoDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("TodoDb")));
 // DI: cada request obtiene su repositorio (scope).
 builder.Services.AddScoped<ITasksRepository, TasksEfRepository>();
+builder.Services.AddScoped<ITasksService, TasksService>();
 builder.Services.AddScoped<IUsersRepository, UsersEfRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -59,13 +62,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Construye la app con todo lo registrado.
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    // Solo en desarrollo: UI de Swagger.
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 // Redirige HTTP a HTTPS.
 app.UseHttpsRedirection();
 
@@ -88,3 +84,6 @@ app.MapControllers();
 
 // Arranque
 app.Run();
+
+// Exponemos Program para pruebas de integracion con WebApplicationFactory.
+public partial class Program { }
