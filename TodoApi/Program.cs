@@ -24,6 +24,7 @@ builder.Services.AddControllers()
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 }
 
 // DbContext de EF Core con SQLite (cadena en appsettings.json).
@@ -61,6 +62,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Construye la app con todo lo registrado.
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // Redirige HTTP a HTTPS.
 app.UseHttpsRedirection();

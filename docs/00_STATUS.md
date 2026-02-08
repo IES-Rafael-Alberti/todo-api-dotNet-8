@@ -76,6 +76,7 @@ Hecho:
 - Tests de roles en verde.
 - Tests de integracion HTTP para autorizacion por rol en verde.
 - Guia docente de integracion en `docs/08_INTEGRATION_TESTS_GUIDE.md`.
+- Swagger UI restaurado con configuracion compatible.
 
 Pendiente (documentacion):
 - (Nada pendiente para cierre de Iteracion 4 en backend/docs).
@@ -84,13 +85,12 @@ Pendiente (documentacion):
 Iteracion 4 cerrada en backend y documentacion.
 
 ### Ultimo paso realizado (para retomar)
-- Commit: `test: add role authorization integration tests`.
+- Swagger UI restaurado y tests (incluyendo integracion) en verde.
 
 ### Reanudar manana
 - Estado: iteraciones 1, 2, 3 y 4 cerradas.
 - Siguiente paso sugerido:
-- Revisar si se quiere recuperar UI de Swagger (se retiro `Swashbuckle` para estabilizar tests de integracion).
-- Si no, preparar demo final en clase con `docs/04_API_TESTING.md` + `docs/08_INTEGRATION_TESTS_GUIDE.md`.
+- Preparar demo final en clase con `docs/04_API_TESTING.md` + `docs/08_INTEGRATION_TESTS_GUIDE.md`.
 
 ### Notas de versiones
 - En casa se usa .NET 10.

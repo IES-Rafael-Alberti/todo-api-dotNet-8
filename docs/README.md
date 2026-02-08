@@ -11,7 +11,7 @@ Proyecto docente para construir una **API REST** con **.NET (C#)** y un **fronte
 - .NET 8/9/10 (C#)
 - ASP.NET Core Web API
 - EF Core + SQLite
-- OpenAPI basico (sin Swagger UI en la configuracion actual)
+- OpenAPI + Swagger UI (en entorno Development)
 - Frontend servido desde `wwwroot`
 
 ### Arquitectura
@@ -33,6 +33,7 @@ dotnet run
 Abrir:
 - Frontend: `http://localhost:<puerto>/`
 - API: `http://localhost:<puerto>/api/...`
+- Swagger UI: `http://localhost:<puerto>/swagger`
 
 ### Tests
 ```bash
