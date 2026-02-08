@@ -2,6 +2,9 @@
 
 ## Practica evaluable - Despliegue en AWS Academy (Learner Lab)
 
+> Nota de planificacion: esta practica no es un punto fundamental del modulo.  
+> Si no se puede completar ahora por falta de tiempo, se realizara como actividad en sesiones de practicas o al finalizar el bloque principal.
+
 ### Objetivo
 Desplegar la aplicacion en AWS App Runner, probar que funciona por Internet y documentar el proceso.
 
@@ -65,4 +68,3 @@ Si alguna prueba no da el resultado esperado:
 
 Rellenar y entregar:
 - `docs/13_AWS_DELIVERY_TEMPLATE.md`
-

@@ -1,5 +1,8 @@
 # Practica AWS Academy - Documento de entrega del grupo
 
+> Nota de planificacion: este bloque de despliegue no es un punto fundamental del modulo.  
+> Si no se completa en este momento por falta de tiempo, se entregara y revisara durante las practicas o al terminar el resto de contenidos.
+
 ---
 
 ## 1. Datos del grupo
