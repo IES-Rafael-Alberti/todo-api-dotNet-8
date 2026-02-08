@@ -45,4 +45,7 @@ Para tests de integracion:
 dotnet test TodoApi.Tests/TodoApi.Tests.csproj --filter "FullyQualifiedName~Integration"
 ```
 
+### Despliegue AWS
+- `docs/10_AWS_DEPLOYMENT.md` (App Runner + ECR, paso a paso).
+
 ---
