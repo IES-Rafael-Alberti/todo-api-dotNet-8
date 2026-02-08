@@ -11,7 +11,7 @@ Proyecto docente para construir una **API REST** con **.NET (C#)** y un **fronte
 - .NET 8/9/10 (C#)
 - ASP.NET Core Web API
 - EF Core + SQLite
-- Swagger (OpenAPI)
+- OpenAPI basico (sin Swagger UI en la configuracion actual)
 - Frontend servido desde `wwwroot`
 
 ### Arquitectura
@@ -20,8 +20,10 @@ Controller → Service → Repository → EF Core (SQLite)
 ```
 
 ### Estado del proyecto
-- **Iteración 1**: En curso (modelo completo + frontend + reglas de negocio).
-- **Iteración 2–4**: Pendientes (usuarios/JWT, propiedad, roles).
+- **Iteración 1**: Cerrada.
+- **Iteración 2**: Cerrada (JWT + auth + frontend minimo).
+- **Iteración 3**: Cerrada (propiedad por usuario).
+- **Iteración 4**: Cerrada (roles + tests de integracion).
 
 ### Cómo ejecutar
 ```bash
@@ -30,6 +32,16 @@ dotnet run
 ```
 Abrir:
 - Frontend: `http://localhost:<puerto>/`
-- Swagger: `http://localhost:<puerto>/swagger`
+- API: `http://localhost:<puerto>/api/...`
+
+### Tests
+```bash
+dotnet test TodoApi.Tests/TodoApi.Tests.csproj
+```
+
+Para tests de integracion:
+```bash
+dotnet test TodoApi.Tests/TodoApi.Tests.csproj --filter "FullyQualifiedName~Integration"
+```
 
 ---
